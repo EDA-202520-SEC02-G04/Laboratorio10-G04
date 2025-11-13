@@ -5,7 +5,7 @@ def add_edge(my_graph, key_r, key_l, weight):
     nuevoarco=new_edge(key_r, key_l, weight)
     vertex=th.get(my_graph['raices'], key)
     th.put(vertex['raices'], nuevoarco)
-    my_graph['num_edges']
+    my_graph['num_edges']+=1
     return my_graph
 def size(my_graph):
     return my_graph['num_edges']
