@@ -1,4 +1,16 @@
 from DataStructures.List import map_linear_probing as th
+
+from DataStructures.Graph import vertex as vx
+from DataStructures.Graph import edge as eg
+from DataStructures.Map import map_linear_probing as lp
+def new_graph(order):
+    grafo = {
+        "vertices": lp.new_map(order,0.5),
+        "num_edges":0
+    }
+    return grafo
+
+
 def new_edge(key_r, key_l, weight):
     pass
 def add_edge(my_graph, key_r, key_l, weight):
