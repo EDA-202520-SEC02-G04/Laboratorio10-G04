@@ -11,11 +11,12 @@ def dfs(graph, source):
     return visited_ht
 
 def dfs_vertex(search, graph, vertex):
-        adjlst = g.adjacents(graph, vertex)
-        for w in range(al.size(adjlst)):
-            visited = lp.get(search['visited'], w)
-            if visited is None:
-                lp.put(search['visited'],
+    adjlst = g.adjacents(graph, vertex)
+    for w in range(al.size(adjlst)):
+        visited = lp.get(search['visited'], w)
+        if visited is None:
+            lp.put(search['visited'],
                         w, {'marked': True, 'edgeTo': vertex})
-                dfs_vertex(search, graph, w)
-        return search
+            dfs_vertex(search, graph, w)
+    return search
+
