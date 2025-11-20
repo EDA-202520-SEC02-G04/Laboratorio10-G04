@@ -13,9 +13,9 @@ def dfs(graph, source):
 def dfs_vertex(search, graph, vertex):
         adjlst = g.adjacents(graph, vertex)
         for w in range(al.size(adjlst)):
-            visited = map.get(search['visited'], w)
+            visited = lp.get(search['visited'], w)
             if visited is None:
-                map.put(search['visited'],
+                lp.put(search['visited'],
                         w, {'marked': True, 'edgeTo': vertex})
                 dfs_vertex(search, graph, w)
         return search
