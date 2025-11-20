@@ -91,12 +91,40 @@ def option_two(cont):
         rank += 1
 
 def option_three(cont):
-    # TODO: Imprimir los resultados de la opción 3
-    ...
+    stop1 = input("Ingrese la parada de ORIGEN: ")
+    stop2 = input("Ingrese la parada de DESTINO: ")
+    route = logic.get_route_between_stops_dfs(cont, stop1, stop2)
+
+    if route is None:
+        print(f"\nNo existe una ruta desde {stop1} hasta {stop2}.\n")
+        return
+    print(f"\nRuta desde {stop1} hasta {stop2}:\n")
+    nodo = route["first"]
+    step = 1
+    while nodo is not None:
+        vertex_id = nodo["info"] 
+        print(f"{step}. {vertex_id}")
+        nodo = nodo["next"]
+        step += 1
 
 def option_four(cont):
-    # TODO: Imprimir los resultados de la opción 4
-    ...
+    stop1 = input("Ingrese la parada de ORIGEN: ")
+    stop2 = input("Ingrese la parada de DESTINO: ")
+
+    route = logic.get_route_between_stops_bfs(cont, stop1, stop2)
+
+    if route is None:
+        print(f"\nNo existe una ruta  desde {stop1} hasta {stop2}.\n")
+        return
+    print(f"\nRuta desde {stop1} hasta {stop2}:\n")
+
+    node = route["first"]
+    step = 1
+    while node is not None:
+        vertex_id = node["info"] 
+        print(f"{step}. {vertex_id}")
+        step += 1
+        node = node["next"]
 
 def option_five(cont):
     # TODO: Imprimir los resultados de la opción 5
