@@ -3,8 +3,9 @@ from DataStructures.Graph import edge as eg
 from DataStructures.Map import map_linear_probing as lp
 from DataStructures.List import array_list as al
 def new_graph(order):
+    capacidad = max(11,order)
     grafo = {
-        "vertices": lp.new_map(order,0.5),
+        "vertices": lp.new_map(capacidad,0.5),
         "num_edges":0
     }
     return grafo

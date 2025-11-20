@@ -28,7 +28,7 @@
 #  Importaciones
 # ___________________________________________________
 
-from DataStructures.List import single_linked_list as lt
+from DataStructures.List import single_linked_list as sl
 from DataStructures.Map import map_linear_probing as m
 from DataStructures.Graph import digraph as G
 
@@ -188,7 +188,7 @@ def add_stop(analyzer, stop):
     """
     Adiciona una parada (BusStopCode) en los stops del sistema de transporte
     """
-    stop['services'] = lt.new_list()
+    stop['services'] = sl.new_list()
     m.put(analyzer['stops'], stop['BusStopCode'], stop)
     return analyzer
 
@@ -207,8 +207,8 @@ def add_route_stop(analyzer, service):
     """
     stop_info = m.get(analyzer['stops'], service['BusStopCode'])
     stop_services = stop_info['services']
-    if lt.is_present(stop_services, service['ServiceNo'], lt.default_function) == -1:
-        lt.add_last(stop_services, service['ServiceNo'])
+    if sl.is_present(stop_services, service['ServiceNo'], sl.default_sort_criteria) == -1:
+        sl.add_last(stop_services, service['ServiceNo'])
 
     return analyzer
 
@@ -226,11 +226,11 @@ def add_same_stop_connections(analyzer, service):
     stop_1 = format_vertex(service)
     stop_buses_lt = m.get(analyzer['stops'], service['BusStopCode'])['services']
 
-    if lt.size(stop_buses_lt) > 1:
+    if sl.size(stop_buses_lt) > 1:
         pass
 
     node = stop_buses_lt['first']
-    for _ in range(lt.size(stop_buses_lt)):
+    for _ in range(sl.size(stop_buses_lt)):
         stop_2 = format_vertex({'BusStopCode': service['BusStopCode'], 'ServiceNo': node['info']})
         if stop_1 != stop_2:
             add_connection(analyzer, stop_1, stop_2, 0)
@@ -247,7 +247,43 @@ def get_most_concurrent_stops(analyzer):
     Obtiene las 5 paradas más concurridas
     """
     # TODO: Obtener las 5 paradas más concurridas, es decir, con más arcos salientes
-    ...
+    graph = analyzer["connections"]
+    vertices = G.vertices(graph)          # lista con todos los vértices
+
+    result_list = sl.new_list()           # aquí guardamos pares {stop, degree}
+
+    # Recorrer la lista de vértices
+    node = vertices["first"]
+    while node is not None:
+        stop_id = node["info"]
+        deg = G.degree(graph, stop_id)
+
+        sl.add_last(result_list, {"stop": stop_id, "degree": deg})
+
+        node = node["next"]
+
+    # Ordenar (mayor degree primero)
+    def cmp(a, b):
+        # Queremos ordenar de mayor a menor, por eso invertimos el criterio
+        return -1 if a["degree"] > b["degree"] else (1 if a["degree"] < b["degree"] else 0)
+
+    # Adaptar cmp al criterio del sort (debe retornar True si a <= b)
+    def criterion(a, b):
+        return cmp(a, b) <= 0
+
+    sl.selection_sort(result_list, criterion)
+
+    # Tomar los primeros 5 elementos
+    top5 = sl.new_list()
+    count = 0
+    node = result_list["first"]
+    while node is not None and count < 5:
+        sl.add_last(top5, node["info"])
+        node = node["next"]
+        count += 1
+
+    return top5
+
 
 def get_route_between_stops_dfs(analyzer, stop1, stop2):
     """

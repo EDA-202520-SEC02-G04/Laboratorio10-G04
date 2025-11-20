@@ -75,7 +75,20 @@ def option_one(cont):
 
 def option_two(cont):
     # TODO: Imprimir los resultados de la opción 2
-    ...
+    print("\nBuscando las paradas más concurridas...\n")
+
+    result = logic.get_most_concurrent_stops(cont)
+
+    print("Top 5 paradas con más conexiones salientes:\n")
+
+    nodo = result["first"]
+    rank = 1
+
+    while nodo is not None:
+        info = nodo["info"]
+        print(f"{rank}. Parada: {info['stop']}  |  Conexiones salientes: {info['degree']}")
+        nodo = nodo["next"]
+        rank += 1
 
 def option_three(cont):
     # TODO: Imprimir los resultados de la opción 3
