@@ -128,7 +128,25 @@ def option_four(cont):
 
 def option_five(cont):
     # TODO: Imprimir los resultados de la opción 5
-    ...
+    stop1 = input("Ingrese la parada de ORIGEN: ")
+    stop2 = input("Ingrese la parada de DESTINO: ")
+
+    print("\nCalculando ruta mínima con Dijkstra...\n")
+
+    route = logic.get_shortest_route_between_stops(cont, stop1, stop2)
+
+    if route is None:
+        print(f"\nNo existe una ruta mínima entre {stop1} y {stop2}.\n")
+        return
+
+    print(f"\nRuta mínima desde {stop1} hasta {stop2}:\n")
+
+    node = route["first"]
+    step = 1
+    while node is not None:
+        print(f"{step}. {node['info']}")
+        node = node["next"]
+        step += 1
 
 def option_six(cont):
     # (Opcional) TODO: Imprimir los resultados de la opción 6

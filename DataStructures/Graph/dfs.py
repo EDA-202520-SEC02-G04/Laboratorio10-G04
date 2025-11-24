@@ -2,16 +2,30 @@ from DataStructures.Graph import vertex as vx
 from DataStructures.Graph import edge as eg
 from DataStructures.Map import map_linear_probing as lp
 from DataStructures.List import array_list as al
-from DataStructures.Graph import digraph as g
+from DataStructures.Graph import digraph as G
+
 
 def dfs(graph, source):
-    visited_ht = lp.new_map(num_elements=g.order(graph), load_factor=0.5 )
-    lp.put(visited_ht, source, {'marked': True, 'edge_from': None})
-    dfs_vertex(graph, source, visited_ht)
-    return visited_ht
+    visited = lp.new_map(G.order(graph), 0.5)
+
+    def explore(v):
+        adj_list = G.adjacents(graph, v)
+
+        for i in range(al.size(adj_list)):
+            w = al.get_element(adj_list, i)
+
+            if lp.get(visited, w) is None:
+                lp.put(visited, w, {"marked": True, "edgeTo": v})
+                explore(w)
+
+    lp.put(visited, source, {"marked": True, "edgeTo": None})
+    explore(source)
+
+    return visited
+
 
 def dfs_vertex(search, graph, vertex):
-    adjlst = g.adjacents(graph, vertex)
+    adjlst = G.adjacents(graph, vertex)
     for w in range(al.size(adjlst)):
         visited = lp.get(search['visited'], w)
         if visited is None:

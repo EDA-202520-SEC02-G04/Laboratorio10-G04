@@ -29,8 +29,13 @@
 # ___________________________________________________
 
 from DataStructures.List import single_linked_list as sl
+from DataStructures.List import array_list as al
 from DataStructures.Map import map_linear_probing as m
 from DataStructures.Graph import digraph as G
+from DataStructures.Graph import bfs as bfs
+from DataStructures.Graph import dijsktra as dijk
+from DataStructures.Graph import dfs as dfs
+
 
 import csv
 import time
@@ -248,11 +253,10 @@ def get_most_concurrent_stops(analyzer):
     """
     # TODO: Obtener las 5 paradas más concurridas, es decir, con más arcos salientes
     graph = analyzer["connections"]
-    vertices = G.vertices(graph)          # lista con todos los vértices
+    vertices = G.vertices(graph)          
 
-    result_list = sl.new_list()           # aquí guardamos pares {stop, degree}
-
-    # Recorrer la lista de vértices
+    result_list = sl.new_list()           
+    
     node = vertices["first"]
     while node is not None:
         stop_id = node["info"]
@@ -262,18 +266,14 @@ def get_most_concurrent_stops(analyzer):
 
         node = node["next"]
 
-    # Ordenar (mayor degree primero)
     def cmp(a, b):
-        # Queremos ordenar de mayor a menor, por eso invertimos el criterio
         return -1 if a["degree"] > b["degree"] else (1 if a["degree"] < b["degree"] else 0)
 
-    # Adaptar cmp al criterio del sort (debe retornar True si a <= b)
     def criterion(a, b):
         return cmp(a, b) <= 0
 
     sl.selection_sort(result_list, criterion)
-
-    # Tomar los primeros 5 elementos
+    
     top5 = sl.new_list()
     count = 0
     node = result_list["first"]
@@ -290,23 +290,53 @@ def get_route_between_stops_dfs(analyzer, stop1, stop2):
     Obtener la ruta entre dos parada usando dfs
     """
     # TODO: Obtener la ruta entre dos parada usando dfs
-    ...
+    graph = analyzer["connections"]
+
+    visited = dfs.dfs(graph, stop1)
+    
+    info = m.get(visited, stop2)
+    if info is None:
+        return None
+    path = al.new_list()
+    actual = stop2
+
+    while actual is not None:
+        al.add_last(path, actual)
+        info = m.get(visited, actual)
+        actual = info["edgeTo"]
+    path = reverse_array_list(path)
+
+    return path
+
+def reverse_array_list(lst):
+    new = al.new_list()
+    for i in range(al.size(lst)-1, -1, -1):
+        al.add_last(new, al.get_element(lst, i))
+    return new
+
 
 def get_route_between_stops_bfs(analyzer, stop1, stop2):
     """
     Obtener la ruta entre dos parada usando bfs
     """
-    # TODO: Obtener la ruta entre dos parada usando bfs
-    ...
+    graph = analyzer["connections"]
+    visited = bfs.bfs(graph, stop1)
+    if not bfs.has_path_to(stop2, visited):
+        return None
+    return bfs.path_to(stop2, visited)
 
 def get_shortest_route_between_stops(analyzer, stop1, stop2):
     """
     Obtener la ruta mínima entre dos paradas
     """
-    # TODO: Obtener la ruta mínima entre dos paradas
-    # Nota: Tenga en cuenta que el debe guardar en la llave
-    #       analyzer['paths'] el resultado del algoritmo de Dijkstra
-    ...
+    graph = analyzer["connections"]
+
+    analyzer["paths"] = dijk.dijkstra(graph, stop1)
+
+    if not dijk.has_path_to(stop2, analyzer["paths"]):
+        return None
+
+    return dijk.path_to(stop2, analyzer["paths"])
 
 def show_calculated_shortest_route(analyzer, destination_stop):
     # (Opcional) TODO: Mostrar en un mapa la ruta mínima entre dos paradas usando folium
